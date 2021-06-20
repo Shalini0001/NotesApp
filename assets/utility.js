@@ -22,3 +22,11 @@ export const getFromLocalStorge = async (key: String) => {
     console.log('getFromLocalStorge Error', err);
   }
 };
+
+export const removeAuthKey = async (key: String) => {
+  try {
+  let res = await AsyncStorage.removeItem(key);
+  } catch (err) {
+  console.log('removeToken Error', err);
+  }
+  };

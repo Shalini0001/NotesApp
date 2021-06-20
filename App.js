@@ -15,7 +15,9 @@ const Notes = () => {
   const [stateIndex, setIndex] = useState()
   useEffect(()=>{
     retrived()
+    Delete()
   },[])
+
   const retrived= async()=>{
     let abc=await utility.getFromLocalStorge("data");
   
@@ -25,11 +27,8 @@ const Notes = () => {
       console.log("nodata");
     }
     console.log("why null",abc);
-
   }
   const Add = async() => {
-    
-
     if (notes.length !== 0) {
       var notesCopy = addnotes;
       notesCopy.push(notes);
@@ -69,12 +68,20 @@ const Notes = () => {
     }
   }
 
-  const Delete = (index) => {
+  const Delete = async(index) => {
     let itemCopy = [...addnotes];
     itemCopy.splice(index, 1);
     setAddnotes(itemCopy);
-    console.log(itemCopy)
-    Alert.alert('Notes is deleted')
+
+    let xyz =await utility.removeAuthKey("data",itemCopy);
+  
+    if(xyz){
+      setAddnotes(xyz);
+      console.log(itemCopy)
+      Alert.alert('Notes is deleted')
+    }else{
+      console.log("remove data");
+    }
   }
 
   const toggleModal = () => {

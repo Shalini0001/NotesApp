@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Alert, ScrollView, Image } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import Modal from 'react-native-modal';
+import * as utility from '../NotesApplication/assets/utility';
 
 const Notes = () => {
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
@@ -12,13 +13,28 @@ const Notes = () => {
   const [visible, setVisible] = useState(false)
   
   const [stateIndex, setIndex] = useState()
-  const Add = () => {
+  useEffect(()=>{
+    retrived()
+  },[])
+  const retrived= async()=>{
+    let abc=await utility.getFromLocalStorge("data");
+  
+    if(abc){
+    setAddnotes(abc);
+    }else{
+      console.log("nodata");
+    }
+    console.log("why null",abc);
+
+  }
+  const Add = async() => {
     
 
     if (notes.length !== 0) {
       var notesCopy = addnotes;
       notesCopy.push(notes);
       setAddnotes(notesCopy);
+      await utility.setInLocalStorge("data",addnotes);
       setNotes('');
       console.log(notesCopy)
       Alert.alert('Notes Added...')
@@ -97,9 +113,11 @@ const Notes = () => {
                       
                       < View >
                         <CheckBox
-                          disabled={false}
+                          // disabled={false}
+                        
                           value={toggleCheckBox}
-                          onValueChange={(newValue) => setToggleCheckBox(newValue)}
+                          onChange={()=>setToggleCheckBox(!toggleCheckBox)}
+                          
                         />
                       </View>
                       {visible && stateIndex == index ? (
@@ -124,7 +142,7 @@ const Notes = () => {
                               <TouchableOpacity onPress={() => handleEdit(edit, index)}>
                                 <View >
 
-                                  <Image source={require('../NotesApplication/assets/edit.png')}></Image>
+                                  <Image source={require('./assets/edit.png')}></Image>
                                 </View>
 
                               </TouchableOpacity>
@@ -132,7 +150,7 @@ const Notes = () => {
                           </Modal>
                           <TouchableOpacity onPress={() => toggleModal()}>
                             <View >
-                              <Image source={require('../NotesApplication/assets/edit.png')}></Image>
+                              <Image source={require('./assets/edit.png')}></Image>
                             </View>
                           </TouchableOpacity>
                         </>
@@ -140,13 +158,13 @@ const Notes = () => {
                         <TouchableOpacity onPress={() => Edit(index)}>
                           <View >
 
-                            <Image source={require('../NotesApplication/assets/edit.png')}></Image>
+                            <Image source={require('./assets/edit.png')}></Image>
                           </View>
                         </TouchableOpacity>
                       }
                       <TouchableOpacity key={index} onPress={() => Delete(index)}>
                         <View>
-                          <Image source={require('../NotesApplication/assets/delete.png')} />
+                          <Image source={require('./assets/delete.png')} />
                         </View>
                       </TouchableOpacity>
                     </View>
